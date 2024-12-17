@@ -24,7 +24,6 @@ EdgeDirectVO::EdgeDirectVO()
     :m_sequence(EdgeVO::Settings::ASSOC_FILE) , m_trajectory() , 
      m_lambda(0.)
 {
-    
     int length = m_sequence.getFrameHeight( getBottomPyramidLevel() ) * m_sequence.getFrameWidth( getBottomPyramidLevel() );
     
     m_X3DVector.resize(EdgeVO::Settings::PYRAMID_DEPTH); // Vector for each pyramid level
@@ -72,7 +71,6 @@ EdgeDirectVO& EdgeDirectVO::operator=(const EdgeDirectVO& rhs)
 
 void EdgeDirectVO::runEdgeDirectVO()
 {
-    std::cout << EdgeVO::Settings::DATASET_DIRECTORY << std::endl;
     //Start timer for stats
     m_statistics.start();
     //Make Pyramid for Reference frame
@@ -87,7 +85,6 @@ void EdgeDirectVO::runEdgeDirectVO()
     // relative_pose intiialized to identity matrix
     Pose relative_pose;
 
-    
     // Start clock timer
     
     outputPose(camera_pose, m_sequence.getFirstTimeStamp());
@@ -136,7 +133,7 @@ void EdgeDirectVO::runEdgeDirectVO()
         for (int lvl = getTopPyramidLevel(); lvl >= getBottomPyramidLevel(); --lvl)
         {
             
-            //const Mat cameraMatrix(m_sequence.getCameraMatrix(lvl));
+            const Mat cameraMatrix(m_sequence.getCameraMatrix(lvl));
             prepareVectors(lvl);
             
             //make3DPoints(cameraMatrix, lvl);
@@ -200,7 +197,7 @@ void EdgeDirectVO::runEdgeDirectVO()
 void EdgeDirectVO::prepareVectors(int lvl)
 {
     cv2eigen(m_sequence.getReferenceFrame()->getDepthMap(lvl), m_Z);
-    cv2eigen(m_sequence.getCurrentFrame()->getEdges(lvl), m_edgeMask);
+    cv2eigen(m_sequence.getReferenceFrame()->getEdges(lvl), m_edgeMask);
     cv2eigen(m_sequence.getReferenceFrame()->getImageVector(lvl), m_im1);
     cv2eigen(m_sequence.getCurrentFrame()->getImageVector(lvl), m_im2);
     cv2eigen(m_sequence.getCurrentFrame()->getGradientX(lvl), m_gx);

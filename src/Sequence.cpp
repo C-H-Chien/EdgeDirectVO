@@ -73,7 +73,6 @@ void readAssocTextfile(std::string filename,
 Sequence::Sequence(std::string filename)
     : m_referenceIndex(0) , m_currentIndex(1)
 {
-    std::cout << filename << std::endl;
     readAssocTextfile(filename, m_imagePaths, m_depthPaths, m_timestamps);
     
     m_numDepthFiles = m_depthPaths.size();
