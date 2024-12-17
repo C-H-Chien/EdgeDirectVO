@@ -4,6 +4,8 @@
 #include <iostream>
 #include <math.h>
 #include <string>
+#include <stdio.h>
+#include <stdlib.h>
 
 namespace EdgeVO{
     namespace Settings{
@@ -60,7 +62,7 @@ namespace EdgeVO{
             std::string("rgbd_dataset_freiburg1_plant")
         };
 
-        const int DATASET_NUMBER = 1;
+        const int DATASET_NUMBER = 10;
 
         const int KEYFRAME_INTERVAL(3);
 
@@ -68,11 +70,12 @@ namespace EdgeVO{
 
 
         const std::string DATASET(DATASET_OPTIONS[DATASET_NUMBER]);
-        // const std::string DATASET("rgbd_dataset_freiburg1_xyz");
+        // const std::string DATASET("rgbd_dataset_freiburg1_room");
 
         //Image and Depth Map Directories
-        const std::string DATASET_DIRECTORY( std::string("../") + DATASET + std::string("/") );
-        const std::string ASSOC_FILE( DATASET_DIRECTORY + std::string("assoc.txt") );
+        const std::string DATASET_DIRECTORY( std::string("/gpfs/data/bkimia/Datasets/TUM-RGBD/") + DATASET + std::string("/") );
+        const std::string ASSOC_FILE( DATASET_DIRECTORY + std::string("associate.txt") );
+
 
         const std::string IMAGE_DIRECTORY(DATASET_DIRECTORY + std::string("rgb") );
         const std::string DEPTH_DIRECTORY(DATASET_DIRECTORY + std::string("depth") );
@@ -100,20 +103,20 @@ namespace EdgeVO{
 
         const float MAX_Z_DEPTH(10.f);
 
-        // const float FX = 517.3f;
-        // const float FY = 516.5f;
-        // const float CX = 318.6f;
-        // const float CY = 255.3f;
+        const float FX = 517.3f;
+        const float FY = 516.5f;
+        const float CX = 318.6f;
+        const float CY = 255.3f;
 
         // const float FX = 525.f;
         // const float FY = 525.f;
         // const float CX = 319.5f;
         // const float CY = 239.5f;
 
-        const float FX = 520.9f;
-        const float FY = 521.0f;
-        const float CX = 325.1f;
-        const float CY = 249.7f;
+        // const float FX = 520.9f;
+        // const float FY = 521.0f;
+        // const float CX = 325.1f;
+        // const float CY = 249.7f;
 
         const float CANNY_RATIO(0.5);//0.33 //0.5 //matlab uses 0.4 //0.15 working well
         const double SIGMA(sqrt(2.));

@@ -18,37 +18,11 @@
 #include <algorithm>
 
 
-namespace EdgeVO{
-    using namespace cv;
-EdgeDirectVO::EdgeDirectVO()
-    :m_sequence(EdgeVO::Settings::ASSOC_FILE) , m_trajectory() , 
-     m_lambda(0.)
-{
-    
-    int length = m_sequence.getFrameHeight( getBottomPyramidLevel() ) * m_sequence.getFrameWidth( getBottomPyramidLevel() );
-    
-    m_X3DVector.resize(EdgeVO::Settings::PYRAMID_DEPTH); // Vector for each pyramid level
-    for(size_t i = 0; i < m_X3DVector.size(); ++i)
-        m_X3DVector[i].resize(length / std::pow(4, i) , Eigen::NoChange); //3 Vector for each pyramid for each image pixel
-
-    m_X3D.resize(length, Eigen::NoChange);
-    m_warpedX.resize(length);
-    m_warpedY.resize(length);
-    m_warpedZ.resize(length);
-    m_gx.resize(length);
-    m_gxFinal.resize(length);
-    m_gy.resize(length);
-    m_gyFinal.resize(length);
-    m_im1.resize(length);
-    m_im1Final.resize(length);
-    m_im2Final.resize(length);
-    m_ZFinal.resize(length);
-    m_Z.resize(length);
-    m_edgeMask.resize(length);
-
-    m_outputFile.open(EdgeVO::Settings::RESULTS_FILE);
+//> main mex function
+void mexFunction( int nl, mxArray *pl[], int nr, const mxArray *pr[] ) {
 
 }
+
 
 EdgeDirectVO::EdgeDirectVO(const EdgeDirectVO& cp)
     :m_sequence(EdgeVO::Settings::ASSOC_FILE)
@@ -136,10 +110,9 @@ void EdgeDirectVO::runEdgeDirectVO()
         for (int lvl = getTopPyramidLevel(); lvl >= getBottomPyramidLevel(); --lvl)
         {
             
-            //const Mat cameraMatrix(m_sequence.getCameraMatrix(lvl));
-            prepareVectors(lvl);
             
-            //make3DPoints(cameraMatrix, lvl);
+            prepareVectors(lvl);
+
 
             float lambda = 0.f;
             float error_last = EdgeVO::Settings::INF_F;
@@ -561,40 +534,3 @@ bool EdgeDirectVO::checkBounds(float x, float xlim, float y, float ylim, float o
     return ( (edgePixel) & (x >= 0) & x < xlim & y >= 0 & y < ylim & oldZ >= 0. & newZ >= 0. );
         
 }
-void EdgeDirectVO::terminationRequested()
-{
-    printf("Display Terminated by User\n");
-    m_statistics.printStatistics();
-
-}
-
-void EdgeDirectVO::outputPose(const Pose& pose, double timestamp)
-{
-    Eigen::Matrix<double,4,4,Eigen::RowMajor> T;
-    cv::Mat pmat = pose.getPoseMatrix();
-    cv::cv2eigen(pmat,T);
-    Eigen::Matrix<double,3,3,Eigen::RowMajor> R = T.block<3,3>(0,0);
-    Eigen::Matrix<double,3,Eigen::RowMajor> t = T.block<3,1>(0,3);
-    Eigen::Quaternion<double> quat(R);
-
-    m_outputFile << std::setprecision(EdgeVO::Settings::RESULTS_FILE_PRECISION) << std::fixed << std::showpoint << timestamp;
-    m_outputFile << " ";
-    m_outputFile << std::setprecision(EdgeVO::Settings::RESULTS_FILE_PRECISION) << std::fixed << std::showpoint << t[0];
-    m_outputFile << " ";
-    m_outputFile << std::setprecision(EdgeVO::Settings::RESULTS_FILE_PRECISION) << std::fixed << std::showpoint << t[1];
-    m_outputFile << " ";
-    m_outputFile << std::setprecision(EdgeVO::Settings::RESULTS_FILE_PRECISION) << std::fixed << std::showpoint << t[2];
-    m_outputFile << " ";
-    m_outputFile << std::setprecision(EdgeVO::Settings::RESULTS_FILE_PRECISION) << std::fixed << std::showpoint << quat.x();
-    m_outputFile << " ";
-    m_outputFile << std::setprecision(EdgeVO::Settings::RESULTS_FILE_PRECISION) << std::fixed << std::showpoint << quat.y();
-    m_outputFile << " ";
-    m_outputFile << std::setprecision(EdgeVO::Settings::RESULTS_FILE_PRECISION) << std::fixed << std::showpoint << quat.z();
-    m_outputFile << " ";
-    m_outputFile << std::setprecision(EdgeVO::Settings::RESULTS_FILE_PRECISION) << std::fixed << std::showpoint << quat.w();
-    m_outputFile << std::endl;
-}
-
-
-
-} //end namespace EdgeVO
